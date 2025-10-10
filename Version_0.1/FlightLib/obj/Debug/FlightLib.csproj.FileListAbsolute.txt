@@ -1,0 +1,12 @@
+C:\Users\danif\Downloads\1-PrimerProyecto (1)\PrimerProyecto\FlightLib\bin\Debug\FlightLib.dll
+C:\Users\danif\Downloads\1-PrimerProyecto (1)\PrimerProyecto\FlightLib\bin\Debug\FlightLib.pdb
+C:\Users\danif\Downloads\1-PrimerProyecto (1)\PrimerProyecto\FlightLib\obj\Debug\FlightLib.csproj.AssemblyReference.cache
+C:\Users\danif\Downloads\1-PrimerProyecto (1)\PrimerProyecto\FlightLib\obj\Debug\FlightLib.csproj.CoreCompileInputs.cache
+C:\Users\danif\Downloads\1-PrimerProyecto (1)\PrimerProyecto\FlightLib\obj\Debug\FlightLib.dll
+C:\Users\danif\Downloads\1-PrimerProyecto (1)\PrimerProyecto\FlightLib\obj\Debug\FlightLib.pdb
+C:\Dani\Universidad\Segundo\Primer Cuatrimestre\INFO2\Proyectos\Versiones\PrimerProyecto_DanielFernández\FlightLib\bin\Debug\FlightLib.dll
+C:\Dani\Universidad\Segundo\Primer Cuatrimestre\INFO2\Proyectos\Versiones\PrimerProyecto_DanielFernández\FlightLib\bin\Debug\FlightLib.pdb
+C:\Dani\Universidad\Segundo\Primer Cuatrimestre\INFO2\Proyectos\Versiones\PrimerProyecto_DanielFernández\FlightLib\obj\Debug\FlightLib.csproj.AssemblyReference.cache
+C:\Dani\Universidad\Segundo\Primer Cuatrimestre\INFO2\Proyectos\Versiones\PrimerProyecto_DanielFernández\FlightLib\obj\Debug\FlightLib.csproj.CoreCompileInputs.cache
+C:\Dani\Universidad\Segundo\Primer Cuatrimestre\INFO2\Proyectos\Versiones\PrimerProyecto_DanielFernández\FlightLib\obj\Debug\FlightLib.dll
+C:\Dani\Universidad\Segundo\Primer Cuatrimestre\INFO2\Proyectos\Versiones\PrimerProyecto_DanielFernández\FlightLib\obj\Debug\FlightLib.pdb
