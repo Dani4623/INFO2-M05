@@ -32,6 +32,10 @@ namespace InterfazGrafica
             Vuelo2 = Vuelo2;
         }
 
+
+
+
+
         public FormSimulacion(FlightPlanList lista, int tiempo, double distSeguridad)
         {
             InitializeComponent();
@@ -140,6 +144,11 @@ namespace InterfazGrafica
             }
         }
 
+
+
+
+
+
         // MÉTODO NUEVO PARA ACTUALIZAR DISTANCIA DE SEGURIDAD
         public void SetDistanciaSeguridad(double distancia)
         {
@@ -149,41 +158,63 @@ namespace InterfazGrafica
         }
 
 
+
+
+
+
+        //CARGA LA SIMULACION
         private void FormSimulacion_Load(object sender, EventArgs e)
         {
-            Avion1.Location = new Point((int)miLista.GetFlightPlan(0).GetCurrentPosition().GetX(), (int)miLista.GetFlightPlan(0).GetCurrentPosition().GetY());
-            Avion2.Location = new Point((int)miLista.GetFlightPlan(1).GetCurrentPosition().GetX(), (int)miLista.GetFlightPlan(1).GetCurrentPosition().GetY());
+            Avion1.Location = new Point(
+                Convert.ToInt32(miLista.GetFlightPlan(0).GetCurrentPosition().GetX()),
+                Convert.ToInt32(miLista.GetFlightPlan(0).GetCurrentPosition().GetY())
+            );
+            Avion2.Location = new Point(
+                Convert.ToInt32(miLista.GetFlightPlan(1).GetCurrentPosition().GetX()),
+                Convert.ToInt32(miLista.GetFlightPlan(1).GetCurrentPosition().GetY())
+            );
 
-            // INICIALIZAR PUNTOS DE LÍNEAS (NUEVO)
+            // INICIALIZAR PUNTOS DE LÍNEAS
             origen1 = new Point(
-                (int)miLista.GetFlightPlan(0).GetInitialPosition().GetX(),
-                (int)miLista.GetFlightPlan(0).GetInitialPosition().GetY()
+                Convert.ToInt32(miLista.GetFlightPlan(0).GetInitialPosition().GetX()),
+                Convert.ToInt32(miLista.GetFlightPlan(0).GetInitialPosition().GetY())
             );
             destino1 = new Point(
-                (int)miLista.GetFlightPlan(0).GetFinalPosition().GetX(),
-                (int)miLista.GetFlightPlan(0).GetFinalPosition().GetY()
+                Convert.ToInt32(miLista.GetFlightPlan(0).GetFinalPosition().GetX()),
+                Convert.ToInt32(miLista.GetFlightPlan(0).GetFinalPosition().GetY())
             );
 
             origen2 = new Point(
-                (int)miLista.GetFlightPlan(1).GetInitialPosition().GetX(),
-                (int)miLista.GetFlightPlan(1).GetInitialPosition().GetY()
+                Convert.ToInt32(miLista.GetFlightPlan(1).GetInitialPosition().GetX()),
+                Convert.ToInt32(miLista.GetFlightPlan(1).GetInitialPosition().GetY())
             );
             destino2 = new Point(
-                (int)miLista.GetFlightPlan(1).GetFinalPosition().GetX(),
-                (int)miLista.GetFlightPlan(1).GetFinalPosition().GetY()
+                Convert.ToInt32(miLista.GetFlightPlan(1).GetFinalPosition().GetX()),
+                Convert.ToInt32(miLista.GetFlightPlan(1).GetFinalPosition().GetY())
             );
 
-            // FORZAR DIBUJADO INICIAL (NUEVO)
+            // FORZAR DIBUJADO INICIAL
             miPanel.Invalidate();
         }
 
 
+
+
+
+
+        //Muestra info del avion 1
         private void Avion1_Click_1(object sender, EventArgs e)
         {
             InfoAvion formInfo = new InfoAvion(miLista.GetFlightPlan(0));
             formInfo.Show();
         }
 
+
+
+
+
+
+        //Muesta info del vuelo 2
         private void Avion2_Click(object sender, EventArgs e)
         {
             InfoAvion formInfo = new InfoAvion(miLista.GetFlightPlan(1));
@@ -193,7 +224,14 @@ namespace InterfazGrafica
         int i = 0;
         bool inicio = false;
         bool final = false;
+        
 
+
+
+
+
+
+        //INICIO DE LA SIMULACION
         private void Inicio_Click(object sender, EventArgs e)
         {
             inicio = true;
@@ -204,6 +242,11 @@ namespace InterfazGrafica
         }
 
 
+
+
+
+
+        //FINAL DE LA SIMULACION
         private void Final_Click(object sender, EventArgs e)
         {
             inicio = false;
@@ -212,38 +255,51 @@ namespace InterfazGrafica
             timer1.Enabled = false;
         }
 
+
+
+
+
+
+
+        //MOTOR DE LA SIMULACION
         private void timer1_Tick(object sender, EventArgs e)
         {
-            if (!inicio || final)
+            if (inicio == false || final)
             {
                 timer1.Enabled = false;
-                return;
             }
-
-            miLista.Mover(tiempoCiclo);
-            Avion1.Location = new Point(
-                (int)miLista.GetFlightPlan(0).GetCurrentPosition().GetX(),
-                (int)miLista.GetFlightPlan(0).GetCurrentPosition().GetY()
-            );
-
-            Avion2.Location = new Point(
-                (int)miLista.GetFlightPlan(1).GetCurrentPosition().GetX(),
-                (int)miLista.GetFlightPlan(1).GetCurrentPosition().GetY()
-            );
-
-            // VERIFICAR CONFLICTO (FASE 10)
-            VerificarConflictoTiempoReal();
-
-            miPanel.Invalidate();
-
-            if (miLista.hanLlegadoTodos())
+            else
             {
-                inicio = false;
-                final = true;
-                timer1.Enabled = false;
+                miLista.Mover(tiempoCiclo);
+
+                Avion1.Location = new Point(
+                    Convert.ToInt32(miLista.GetFlightPlan(0).GetCurrentPosition().GetX()),
+                    Convert.ToInt32(miLista.GetFlightPlan(0).GetCurrentPosition().GetY())
+                );
+
+                Avion2.Location = new Point(
+                    Convert.ToInt32(miLista.GetFlightPlan(1).GetCurrentPosition().GetX()),
+                    Convert.ToInt32(miLista.GetFlightPlan(1).GetCurrentPosition().GetY())
+                );
+
+                VerificarConflictoTiempoReal();
+                miPanel.Invalidate();
+
+                if (miLista.hanLlegadoTodos())
+                {
+                    inicio = false;
+                    final = true;
+                    timer1.Enabled = false;
+                }
             }
         }
 
+
+
+
+
+
+        //Mostrar datos actuales de los vuelos
         private void MostrarDatosActuales_Click(object sender, EventArgs e)
         {
 
@@ -256,56 +312,17 @@ namespace InterfazGrafica
             timer1.Enabled = true;
 
         }
+
+
+
+
+
+
+
+
+        //Cada vez que se mueve un ciclo, se verifica si hay conflicto en tiempo real
         private void VerificarConflictoTiempoReal()
         {
-            if (miLista.GetNum() < 2) return;
-
-            FlightPlan vuelo1 = miLista.GetFlightPlan(0);
-            FlightPlan vuelo2 = miLista.GetFlightPlan(1);
-
-            // Calcular distancia entre centros
-            double distanciaCentros = vuelo1.Distancia(
-                vuelo2.GetCurrentPosition().GetX(),
-                vuelo2.GetCurrentPosition().GetY()
-            );
-
-            // CONFLICTO cuando distancia entre centros < 2 * distanciaSeguridad
-            // (porque cada elipse tiene radio = distanciaSeguridad)
-            //TENEMOS LA DUDA DE SI LA DISTANCIA DE SEGURIDAD ES DOBLE POR LAS ELIPSES O SOLO CUANDO ENTRE UN AVIÓN
-            //DENTRO DE LA ELIPSE?????
-            bool enConflicto = distanciaCentros < (2 * distanciaSeguridad);
-
-            if (enConflicto && !conflictoActivo)
-            {
-                conflictoActivo = true;
-
-                MessageBox.Show($"¡ALERTA! Las zonas de seguridad se están tocando.\n" +
-                               $"Distancia entre aviones: {distanciaCentros:F2}\n" +
-                               $"Umbral de seguridad: {2 * distanciaSeguridad:F2}",
-                               "Conflicto Detectado - Fase 10",
-                               MessageBoxButtons.OK,
-                               MessageBoxIcon.Warning);
-
-                // Cambiar color de los aviones
-                Avion1.BackColor = Color.Red;
-                Avion2.BackColor = Color.Red;
-            }
-            else if (!enConflicto && conflictoActivo)
-            {
-                conflictoActivo = false;
-                //Color rojo a los aviones
-                Avion1.BackColor = Color.FromArgb(255, 192, 192);
-                Avion2.BackColor = Color.FromArgb(192, 255, 192);
-            }
-        }
-        private void btnVerificarConflicto_Click(object sender, EventArgs e)
-        {
-            if (miLista.GetNum() < 2)
-            {
-                MessageBox.Show("No hay suficientes vuelos para verificar conflicto.");
-                return;
-            }
-
             FlightPlan vuelo1 = miLista.GetFlightPlan(0);
             FlightPlan vuelo2 = miLista.GetFlightPlan(1);
 
@@ -317,14 +334,57 @@ namespace InterfazGrafica
             double umbralSeguridad = 2 * distanciaSeguridad;
             bool enConflicto = distanciaCentros < umbralSeguridad;
 
-            string mensaje = enConflicto
-                ? $"CONFLICTO DETECTADO\nDistancia: {distanciaCentros:F2}"
-                : $"SIN CONFLICTO\nDistancia: {distanciaCentros:F2}";
-
-            MessageBox.Show(mensaje, "Verificación de Conflicto",
-                           MessageBoxButtons.OK,
-                           enConflicto ? MessageBoxIcon.Warning : MessageBoxIcon.Information);
+            if (enConflicto && conflictoActivo == false)
+            {
+                conflictoActivo = true;
+                MessageBox.Show($"Conflicto detectado. Distancia: {distanciaCentros}");
+                Avion1.BackColor = Color.Red;
+                Avion2.BackColor = Color.Red;
+            }
+            else if (enConflicto == false && conflictoActivo)
+            {
+                conflictoActivo = false;
+                Avion1.BackColor = Color.LightCoral;
+                Avion2.BackColor = Color.LightGreen;
+            }
         }
+
+
+
+
+
+
+
+
+
+        //Boton de verificacion de conflicto
+        private void btnVerificarConflicto_Click(object sender, EventArgs e)
+        {
+            FlightPlan vuelo1 = miLista.GetFlightPlan(0);
+            FlightPlan vuelo2 = miLista.GetFlightPlan(1);
+
+            double distanciaCentros = vuelo1.Distancia(
+                vuelo2.GetCurrentPosition().GetX(),
+                vuelo2.GetCurrentPosition().GetY()
+            );
+
+            double umbralSeguridad = 2 * distanciaSeguridad;
+            bool enConflicto = distanciaCentros < umbralSeguridad;
+
+            if (enConflicto)
+            {
+                MessageBox.Show($"CONFLICTO - Distancia: {distanciaCentros:F2}", "Conflicto", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            else
+            {
+                MessageBox.Show($"Sin conflicto - Distancia: {distanciaCentros:F2}", "Sin Problemas", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+
+
+
+
         public double vel1;
         public double vel2;
         public void SetVelocidad(double v1, double v2)
@@ -332,20 +392,55 @@ namespace InterfazGrafica
             vel1 = v1;
             vel2 = v2;
         }
+
+
+        //Modificar velocidades de los vuelos
         private void btnCambiarVelocidadesDeLosVuelos_Click(object sender, EventArgs e)
         {
             CambiarVelocidades Cambiar = new CambiarVelocidades();
             Cambiar.SetVelocidad(vel1, vel2);
             Cambiar.ShowDialog();
-            Vuelo1.SetVelocidad(Cambiar.velvuelo1);
-            Vuelo2.SetVelocidad(Cambiar.velvuelo2);
+            miLista.GetFlightPlan(0).SetVelocidad(Cambiar.velvuelo1);
+            miLista.GetFlightPlan(1).SetVelocidad(Cambiar.velvuelo2);
 
         }
 
+        //BOTON DE REINICIO DE LA SIMULACION
         private void btnReiniciar_Click(object sender, EventArgs e)
         {
+            // Avion 1 a posicion inicial
+            miLista.GetFlightPlan(0).SetPosition(
+                miLista.GetFlightPlan(0).GetInitialPosition().GetX(),
+                miLista.GetFlightPlan(0).GetInitialPosition().GetY()
+            );
 
+            // Avion 2 a posicion inicial
+            miLista.GetFlightPlan(1).SetPosition(
+                miLista.GetFlightPlan(1).GetInitialPosition().GetX(),
+                miLista.GetFlightPlan(1).GetInitialPosition().GetY()
+            );
 
+            // Actualiza posiciones en pantalla
+            Avion1.Location = new Point(
+                Convert.ToInt32(miLista.GetFlightPlan(0).GetCurrentPosition().GetX()),
+                Convert.ToInt32(miLista.GetFlightPlan(0).GetCurrentPosition().GetY())
+            );
+            Avion2.Location = new Point(
+                Convert.ToInt32(miLista.GetFlightPlan(1).GetCurrentPosition().GetX()),
+                Convert.ToInt32(miLista.GetFlightPlan(1).GetCurrentPosition().GetY())
+            );
+
+            // Reinicia la simulación
+            inicio = false;
+            final = false;
+            conflictoActivo = false;
+
+            // Restaura colores
+            Avion1.BackColor = Color.LightCoral;
+            Avion2.BackColor = Color.LightGreen;
+
+            // Redibuja
+            miPanel.Invalidate();
         }
     }
 }
