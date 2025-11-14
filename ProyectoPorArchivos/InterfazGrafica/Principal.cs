@@ -39,11 +39,12 @@ namespace InterfazGrafica
             }
         }
 
+
         private void simulaciónToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (Vuelo1 == null || Vuelo2 == null)
             {
-                MessageBox.Show("Primero carga los datos de vuelos");
+                MessageBox.Show("Carga los datos de vuelos");
                 return;
             }
 
@@ -120,139 +121,98 @@ namespace InterfazGrafica
             formSimulacion.Show();
         }
 
+
+
+
+
+
+
         private void Principal_Load(object sender, EventArgs e)
         {
 
         }
-        // Método para resolver conflictos automáticamente ajustando velocidades
-        private bool ResolverConflictoAutomatico(FlightPlan vuelo1, FlightPlan vuelo2, double distanciaSeguridad, double tiempoMaximo)
-        {
-            double velocidadOriginalVuelo1 = vuelo1.GetVelocidad();
-            double velocidadOriginalVuelo2 = vuelo2.GetVelocidad();
 
-            Console.WriteLine($"Velocidad original V1: {velocidadOriginalVuelo1}");
-            Console.WriteLine($"Velocidad original V2: {velocidadOriginalVuelo2}");
-
-            // Más factores de velocidad para mayor probabilidad de éxito
-            double[] factoresVelocidad = { 0.5, 0.6, 0.7, 0.8, 0.9, 1.1, 1.2, 1.3, 1.5, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0};
-
-            // ESTRATEGIA 1: Vuelo 1 más lento
-            foreach (double factor in factoresVelocidad)
-            {
-                if (factor < 1.0) // Solo hacer más lento
-                {
-                    vuelo1.SetVelocidad(velocidadOriginalVuelo1 * factor);
-                    if (!vuelo1.EntraraEnConflicto(vuelo2, distanciaSeguridad, tiempoMaximo))
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            // ESTRATEGIA 2: Vuelo 1 más rápido
-            foreach (double factor in factoresVelocidad)
-            {
-                if (factor > 1.0) // Solo hacer más rápido
-                {
-                    vuelo1.SetVelocidad(velocidadOriginalVuelo1 * factor);
-                    if (!vuelo1.EntraraEnConflicto(vuelo2, distanciaSeguridad, tiempoMaximo))
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            // ESTRATEGIA 3: Vuelo 2 más lento
-            vuelo1.SetVelocidad(velocidadOriginalVuelo1);
-            foreach (double factor in factoresVelocidad)
-            {
-                if (factor < 1.0)
-                {
-                    vuelo2.SetVelocidad(velocidadOriginalVuelo2 * factor);
-                    if (!vuelo1.EntraraEnConflicto(vuelo2, distanciaSeguridad, tiempoMaximo))
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            // ESTRATEGIA 4: Vuelo 2 más rápido
-            foreach (double factor in factoresVelocidad)
-            {
-                if (factor > 1.0)
-                {
-                    vuelo2.SetVelocidad(velocidadOriginalVuelo2 * factor);
-                    if (!vuelo1.EntraraEnConflicto(vuelo2, distanciaSeguridad, tiempoMaximo))
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            // Restaurar si no se pudo resolver
-            vuelo1.SetVelocidad(velocidadOriginalVuelo1);
-            vuelo2.SetVelocidad(velocidadOriginalVuelo2);
-
-            Console.WriteLine("No se pudo resolver automáticamente");
-            return false;
-        }
+        //ResolverConflictoInstantaneo
         private bool ResolverConflictoInstantaneo(FlightPlan vuelo1, FlightPlan vuelo2, double distanciaSeguridad, double tiempoMaximo)
         {
             double v1Original = vuelo1.GetVelocidad();
             double v2Original = vuelo2.GetVelocidad();
 
 
-            // Estrategias matemáticas instantáneas
-            (double, double)[] estrategias = {
-        (v1Original * 0.3, v2Original),      // V1 muy lento
-        (v1Original * 0.5, v2Original),      // V1 lento
-        (v1Original * 0.7, v2Original),      // V1 moderado
-        (v1Original * 1.5, v2Original),      // V1 rápido
-        (v1Original * 2.0, v2Original),      // V1 muy rápido
-        (v1Original, v2Original * 0.3),      // V2 muy lento
-        (v1Original, v2Original * 0.5),      // V2 lento
-        (v1Original, v2Original * 0.7),      // V2 moderado
-        (v1Original, v2Original * 1.5),      // V2 rápido
-        (v1Original, v2Original * 2.0),      // V2 muy rápido
-        (v1Original * 0.8, v2Original * 1.2), // Combinación 1
-        (v1Original * 1.2, v2Original * 0.8), // Combinación 2
-        (v1Original * 0.6, v2Original * 0.6), // Ambos lentos
-        (v1Original * 1.4, v2Original * 1.4)  // Ambos rápidos
-    };
 
-            for (int i = 0; i < estrategias.Length; i++)
+            // ESTRATEGIA 1: Reducir velocidad del vuelo 1 de unidad en unidad
+            for (double v1Nueva = v1Original - 1; v1Nueva >= 1; v1Nueva -= 1)
             {
-                vuelo1.SetVelocidad(estrategias[i].Item1);
-                vuelo2.SetVelocidad(estrategias[i].Item2);
+                vuelo1.SetVelocidad(v1Nueva);
 
-                // Verificación MATEMÁTICA instantánea
-                if (!vuelo1.EntraraEnConflicto(vuelo2, distanciaSeguridad, tiempoMaximo))
+                //Comprueba si sigue habiendo conflicto, si no lo hay , retornará true
+                bool hayConflicto = vuelo1.EntraraEnConflicto(vuelo2, distanciaSeguridad, tiempoMaximo);
+                if (hayConflicto == false)
                 {
                     MessageBox.Show(
-                        $"Nuevas velocidades:\n" +
-                        $"Vuelo 1: {estrategias[i].Item1:F1} (original: {v1Original:F1})\n" +
-                        $"Vuelo 2: {estrategias[i].Item2:F1} (original: {v2Original:F1})",
-                        "Resolución Exitosa",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information
-                    );
+                        $"Conflicto resuelto reduciendo velocidad Vuelo 1\n" +
+                        $"Nueva velocidad Vuelo 1: {v1Nueva} (original: {v1Original})\n" +
+                        $"Velocidad Vuelo 2: {v2Original}");
                     return true;
                 }
             }
-            
+            // Restaurar velocidad original del vuelo 1
+            vuelo1.SetVelocidad(v1Original);
 
-            // Restaurar si no se pudo resolver
+
+
+            // ESTRATEGIA 2: Reducir velocidad del vuelo 2 de unidad en unidad
+            for (double v2Nueva = v2Original - 1; v2Nueva >= 1; v2Nueva -= 1)
+            {
+                vuelo2.SetVelocidad(v2Nueva);
+
+                //Comprueba si sigue habiendo conflicto, si no lo hay , retornará true
+                bool hayConflicto = vuelo1.EntraraEnConflicto(vuelo2, distanciaSeguridad, tiempoMaximo);
+                if (hayConflicto == false)
+                {
+                    MessageBox.Show(
+                        $"Conflicto resuelto reduciendo velocidad Vuelo 2\n" +
+                        $"Velocidad Vuelo 1: {v1Original}\n" +
+                        $"Nueva velocidad Vuelo 2: {v2Nueva} (original: {v2Original})");
+                    return true;
+                }
+            }
+            // Restaurar velocidad original del vuelo 2
+            vuelo2.SetVelocidad(v2Original);
+
+
+
+            // ESTRATEGIA 3: Combinación - reducir vuelo 1 y aumentar vuelo 2
+            for (double v1Nueva = v1Original - 1; v1Nueva >= 1; v1Nueva -= 1)
+            {
+                for (double v2Nueva = v2Original + 1; v2Nueva <= v2Original + 20; v2Nueva += 1)
+                {
+                    vuelo1.SetVelocidad(v1Nueva);
+                    vuelo2.SetVelocidad(v2Nueva);
+
+                    bool hayConflicto = vuelo1.EntraraEnConflicto(vuelo2, distanciaSeguridad, tiempoMaximo);
+                    if (hayConflicto == false)
+                    {
+                        MessageBox.Show(
+                            $"Conflicto resuelto con combinación\n" +
+                            $"Nueva velocidad Vuelo 1: {v1Nueva:F1} (original: {v1Original:F1})\n" +
+                            $"Nueva velocidad Vuelo 2: {v2Nueva:F1} (original: {v2Original:F1})");
+                        return true;
+                    }
+                }
+            }
+            // Si no se ha resuelto, establece las velocidades originales
             vuelo1.SetVelocidad(v1Original);
             vuelo2.SetVelocidad(v2Original);
 
-            MessageBox.Show(
-                "No se pudo resolver automáticamente\n" +
-                "Ajuste manualmente las rutas o velocidades",
-                "No Se Pudo Resolver",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Warning
-            );
+            MessageBox.Show("Conflicto no resuelto");
+
+
+
+            //Como es un bool y no se ha resuelto, retorna fase
             return false;
         }
+
+
     }
 }
