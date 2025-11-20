@@ -500,3 +500,5 @@ private void deshacerBtn_Click(object sender, EventArgs e)
 
 
 
+MessageBox.Show($"Información de los datos en el fichero de vuelos:\n\n - Los datos deben estar ordenados en ID, compañia, x inicial, y inicial,        x final, y final, velocidad.\n" +
+    $" - Cada linea de la lista tiene que corresponder a un vuelo. \n - Los datos deben estar separados por comas (,)");
