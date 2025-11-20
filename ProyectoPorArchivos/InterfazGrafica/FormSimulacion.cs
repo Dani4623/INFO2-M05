@@ -444,3 +444,44 @@ namespace InterfazGrafica
         }
     }
 }
+
+
+
+
+
+        private void deshacerBtn_Click(object sender, EventArgs e)
+        {
+            if (miLista == null) return;
+
+            // Verificar si estamos en posición inicial
+            bool enInicial = true;
+            for (int i = 0; i < miLista.GetNum(); i++)
+            {
+                double xActual = miLista.GetFlightPlan(i).GetCurrentPosition().GetX();
+                double yActual = miLista.GetFlightPlan(i).GetCurrentPosition().GetY();
+                double xInicial = miLista.GetFlightPlan(i).GetInitialPosition().GetX();
+                double yInicial = miLista.GetFlightPlan(i).GetInitialPosition().GetY();
+
+                if (xActual != xInicial || yActual != yInicial)
+                {
+                    enInicial = false;
+                    break;
+                }
+            }
+
+            if (enInicial)
+            {
+                MessageBox.Show("Ya estás en la posición inicial");
+                return;
+            }
+
+            else
+            {
+                miLista.Mover(-tiempoCiclo);
+                GuardarEstadoActual();
+                VerificarConflictoTiempoReal();
+                miPanel.Invalidate();   
+                ActualizarIconos();
+
+            }
+        }
