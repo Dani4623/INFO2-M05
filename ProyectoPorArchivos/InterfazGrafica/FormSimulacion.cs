@@ -451,39 +451,52 @@ namespace InterfazGrafica
 
 
 
-try
+
+
+
+
+
+
+
+private void deshacerBtn_Click(object sender, EventArgs e)
+{
+    if (miLista == null) return;
+
+    // Verificar si estamos en posición inicial
+    bool enInicial = true;
+    for (int i = 0; i < miLista.GetNum(); i++)
     {
-        // Crear lista de ejemplo con 10 vuelos
-        miLista = new FlightPlanList();
-        
-        // Vuelo 1
-        FlightPlan vuelo1 = new FlightPlan("IB123", "Iberia", 50, 50, 400, 400, 180);
-        miLista.AddFlightPlan(vuelo1);
-        
-        // Vuelo 2  
-        FlightPlan vuelo2 = new FlightPlan("BA456", "British", 100, 100, 350, 350, 160);
-        miLista.AddFlightPlan(vuelo2);
-        
-        // Vuelo 3
-        FlightPlan vuelo3 = new FlightPlan("LH789", "Lufthansa", 150, 150, 300, 300, 140);
-        miLista.AddFlightPlan(vuelo3);
-        
-        // Vuelo 4
-        FlightPlan vuelo4 = new FlightPlan("AF321", "AirFrance", 200, 200, 250, 250, 120);
-        miLista.AddFlightPlan(vuelo4);
-        
-        // Vuelo 5
-        FlightPlan vuelo5 = new FlightPlan("TK654", "Turkish", 250, 250, 200, 200, 100);
-        miLista.AddFlightPlan(vuelo5);
-        
-        // Inicializar la simulación
-        InicializarIconos();
-        miPanel.Invalidate();
-        
-        MessageBox.Show("Ejemplo cargado: 5 vuelos listos para simular");
+        double xActual = miLista.GetFlightPlan(i).GetCurrentPosition().GetX();
+        double yActual = miLista.GetFlightPlan(i).GetCurrentPosition().GetY();
+        double xInicial = miLista.GetFlightPlan(i).GetInitialPosition().GetX();
+        double yInicial = miLista.GetFlightPlan(i).GetInitialPosition().GetY();
+
+        if (xActual != xInicial || yActual != yInicial)
+        {
+            enInicial = false;
+            break;
+        }
     }
-    catch (Exception ex)
+
+    if (enInicial)
     {
-        MessageBox.Show("Error al cargar ejemplo: " + ex.Message);
+        MessageBox.Show("Ya estás en la posición inicial");
+        return;
+    }
+
+    else
+    {
+        miLista.Mover(-tiempoCiclo);
+        GuardarEstadoActual();
+        VerificarConflictoTiempoReal();
+        miPanel.Invalidate();   
+        ActualizarIconos();
+
     }
 }
+
+
+
+
+
+
