@@ -523,55 +523,49 @@ MessageBox.Show($"Información de los datos en el fichero de vuelos:\n\n - Los d
 
 
 
-private void exportarListaBtn_Click(object sender, EventArgs e)
+public FlightPlanList LeerVuelosDesdeFichero(string rutaFichero)
 {
-    // Ruta dentro de la carpeta del proyecto
-    string proyectoPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\"));
-
-    SaveFileDialog saveDialog = new SaveFileDialog();
-    saveDialog.Filter = "Archivos de texto (*.txt)|*.txt";
-    saveDialog.Title = "Guardar vuelos";
-    saveDialog.FileName = $"vuelos_{DateTime.Now:yyyyMMdd_HHmmss}.txt";
-
-    // Establecer la ruta inicial en la carpeta del proyecto
-    saveDialog.InitialDirectory = proyectoPath;
-
-    if (saveDialog.ShowDialog() == DialogResult.OK)
+    try
     {
-        try
+        FlightPlanList lista = new FlightPlanList();
+        List<string> lineas = new List<string>();
+        
+        using (StreamReader reader = new StreamReader(rutaFichero))
         {
-            using (StreamWriter archivo = new StreamWriter(saveDialog.FileName))
+            string linea;
+            while ((linea = reader.ReadLine()) != null)
             {
-                // Usar CultureInfo.InvariantCulture para asegurar punto como separador decimal
-                System.Globalization.CultureInfo culture = System.Globalization.CultureInfo.InvariantCulture;
-                
-                for (int i = 0; i < miLista.GetNum(); i++)
-                {
-                    FlightPlan vuelo = miLista.GetFlightPlan(i);
-                    
-                    // Formatear números con punto decimal usando CultureInfo.InvariantCulture
-                    string linea = string.Format(culture,
-                        "{0},{1},{2:F2},{3:F2},{4:F2},{5:F2},{6:F2}",
-                        vuelo.GetId(),
-                        vuelo.GetCompany(),
-                        vuelo.GetCurrentPosition().GetX(),
-                        vuelo.GetCurrentPosition().GetY(),
-                        vuelo.GetFinalPosition().GetX(),
-                        vuelo.GetFinalPosition().GetY(),
-                        vuelo.GetVelocidad());
-                    
-                    archivo.WriteLine(linea);
-                }
+                lineas.Add(linea);
             }
+        }
 
-            // Mostrar ruta relativa al proyecto
-            string rutaRelativa = Path.GetRelativePath(proyectoPath, saveDialog.FileName);
-            MessageBox.Show($"Archivo guardado en:\n{rutaRelativa}", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            numeroArchivosGuardado++;
-        }
-        catch (Exception ex)
+        // Usar CultureInfo.InvariantCulture para leer números con puntos decimales
+        System.Globalization.CultureInfo culture = System.Globalization.CultureInfo.InvariantCulture;
+        
+        for (int i = 0; i < lineas.Count; i++)
         {
-            MessageBox.Show($"Error al guardar: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            string[] datos = lineas[i].Split(',');
+
+            if (datos.Length == 7)
+            {
+                FlightPlan vuelo = new FlightPlan(
+                    datos[0], 
+                    datos[1], 
+                    Convert.ToDouble(datos[2], culture),  // Usar culture aquí
+                    Convert.ToDouble(datos[3], culture),  // Usar culture aquí
+                    Convert.ToDouble(datos[4], culture),  // Usar culture aquí
+                    Convert.ToDouble(datos[5], culture),  // Usar culture aquí
+                    Convert.ToDouble(datos[6], culture)   // Usar culture aquí
+                );
+
+                lista.AddFlightPlan(vuelo);
+            }
         }
+
+        return lista;
+    }
+    catch (Exception ex)
+    {
+        throw new Exception("Error al leer el fichero: " + ex.Message);
     }
 }
