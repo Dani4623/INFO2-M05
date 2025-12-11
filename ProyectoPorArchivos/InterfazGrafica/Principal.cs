@@ -216,3 +216,53 @@ namespace InterfazGrafica
 
     }
 }
+
+
+
+
+
+
+
+
+
+    private void ExportarPDF_Click(object sender, EventArgs e)
+    {
+        if (listavuelos == null || listavuelos.GetNum() == 0)
+        {
+            MessageBox.Show("No hay vuelos cargados para exportar.", "Error",
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return;
+        }
+
+        SaveFileDialog saveDialog = new SaveFileDialog();
+        saveDialog.Filter = "Archivos PDF (*.pdf)|*.pdf";
+        saveDialog.Title = "Exportar informe a PDF";
+        saveDialog.FileName = $"informe_vuelos_{DateTime.Now:yyyyMMdd_HHmmss}.pdf";
+
+        if (saveDialog.ShowDialog() == DialogResult.OK)
+        {
+            try
+            {
+                // Usar ImagePdfExporter que no tiene problemas con fuentes
+                ImagePdfExporter.ExportToPDF(listavuelos, companyManager, saveDialog.FileName);
+
+                MessageBox.Show($"Informe exportado exitosamente a:\n{saveDialog.FileName}",
+                    "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                // Opcional: abrir el PDF automáticamente
+                try
+                {
+                    System.Diagnostics.Process.Start(saveDialog.FileName);
+                }
+                catch
+                {
+                    // Si no se puede abrir, no hacer nada
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al generar PDF: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+}
